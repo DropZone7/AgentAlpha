@@ -1,0 +1,21 @@
+{
+  "network": "testnet",
+  "currency": "414C504841000000000000000000000000000000",
+  "total_supply": "100000000",
+  "deployed_at": "2026-02-10T14:59:15.486Z",
+  "cold_wallet": {
+    "address": "rKswahcHRhSnJT17GjF4x1jJzkVweCi9E",
+    "seed": "sEdTDvDAhrMrSogBEiNuLdyy846fKYi",
+    "role": "Token Issuer"
+  },
+  "hot_wallet": {
+    "address": "rhECPG1uRf3nu4DZoL6bUpkyqt5nHQ8rrQ",
+    "seed": "sEd7DoTGvcVNkqjAspscM4HRoYHxExE",
+    "role": "Operations / Distribution"
+  },
+  "treasury_wallet": {
+    "address": "r3zQ9CEqWttDTeMmH7nssEYn84aWVNpW8b",
+    "seed": "sEd7UaeEUG2qsZhgoYyS7frA6DRXBC5",
+    "role": "Community Treasury"
+  }
+}

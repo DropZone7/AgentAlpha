@@ -1,0 +1,3 @@
+node_modules/
+.wallets-testnet.json
+.wallets-mainnet.json
