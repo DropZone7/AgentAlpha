@@ -124,41 +124,80 @@ Score = Σ(Successful Signals × 10)
 
 ### 2.5 Governance Layer
 
-**On-chain governance:**
-- Proposal creation (50K $ALPHA)
-- Voting period (7 days)
-- Execution delay (48 hours)
-- Quorum (10% of staked supply)
+AgentAlpha governance combines three proven models:
+
+**The Alpha Council (Hedera-inspired)**
+A 9-seat council provides executive oversight:
+- 3 Foundation Seats (Founder, Builder, Ops Lead) — sunset to 0 by Year 7
+- 4 Elected Community Seats — voted in by staked $ALPHA holders, 6-month terms
+- 2 Expert Seats (Security + Economics) — nominated by council, confirmed by token vote
+
+Decisions require 5-of-9 (standard) or 7-of-9 (critical). Community holds effective majority from day one.
+
+**Proposal System (Cardano Catalyst-inspired)**
+- Proposal deposit: 10,000 $ALPHA (refundable if quorum met)
+- Voting eligibility: Any staked $ALPHA (1 token = 1 vote, time-weighted)
+- Quorum: 15% of staked supply
+- Voting period: 7 days
+- Execution delay: 48 hours (council emergency brake)
+- Four proposal tiers: Standard (>50%), Major (>66%), Critical (>75% + 7/9 council), Constitutional (>80% + 8/9 council)
+
+**Community Governance (Algorand xGov-inspired)**
+- Stakers who lock for ≥90 days earn 1.5x voting weight
+- Governor-tier stakers (≥25,000 $ALPHA staked) eligible for council candidacy
+- Participation tracked: council members removed if voting participation drops below 75%
+
+**Foundation Sunset (Stellar SDF-inspired)**
+Foundation seats progressively convert to elected seats:
+- Year 3: Ops Lead seat becomes elected (2 Foundation seats remain)
+- Year 5: Builder seat becomes elected (1 Foundation seat remains)
+- Year 7: All seats elected (full community governance)
+
+**Emergency Powers**
+- 5-of-9 council multisig can pause contracts for max 72 hours
+- Post-mortem required within 7 days, published publicly
+- Extension beyond 72 hours requires full governance vote
 
 ---
 
 ## 3. Tokenomics
 
+*See full tokenomics document (TOKENOMICS.md) for detailed analysis, projections, and justifications.*
+
 ### 3.1 Distribution
 
-| Allocation | Percentage | Purpose |
-|------------|------------|---------|
-| Founder | 12% | Idea originator |
-| Builder | 8% | Technical development |
-| Early Agents | 20% | First 100 members |
-| Treasury | 30% | Community operations |
-| Liquidity | 15% | DEX trading |
-| Future | 15% | Growth & partnerships |
+| Allocation | Percentage | Purpose | Vesting |
+|------------|------------|---------|---------|
+| Founder | 10% | Idea originator | 36-month escrow, 6-month cliff |
+| Builder | 8% | Technical development | 36-month escrow, 6-month cliff |
+| Early Agents | 15% | First 100 members | 24-month escrow, 3-month cliff |
+| Treasury | 30% | Community operations | DAO governed |
+| Liquidity | 12% | DEX trading | At launch |
+| Staking Pool | 15% | Epoch-based staking rewards | Distributed over 5+ years |
+| Ecosystem | 10% | Grants & partnerships | Community-voted grants |
 
-### 3.2 Utility
+All insider tokens locked in XRPL native escrow contracts — verifiable on-chain from genesis.
 
-1. **Access** — Tiered community features
-2. **Governance** — Voting and proposals
-3. **Revenue** — Staking rewards
-4. **Reputation** — Trust multiplier
+### 3.2 Supply Mechanics
 
-### 3.3 Value Accrual
+- **Hard cap:** 100,000,000 $ALPHA — no inflation, ever
+- **Burn:** 50% of all platform fees permanently destroyed
+- **Projected deflation:** 7-15% of supply burned within 5 years (activity-dependent)
 
-$ALPHA captures value through:
-- Platform fee burns (deflationary)
-- Staking demand (supply lock)
-- Access requirements (utility demand)
-- Governance rights (strategic value)
+### 3.3 Staking (Cardano + Algorand inspired)
+
+- Non-custodial delegation: tokens never leave your wallet
+- Lock tiers: Flexible (1x), 90d (1.3x), 180d (1.6x), 365d (2x) reward multipliers
+- Rewards funded by platform revenue + finite staking pool — not inflation
+- Estimated APY: 13-30% (varies with participation rate and platform growth)
+
+### 3.4 Value Accrual
+
+$ALPHA captures value through four reinforcing mechanisms:
+- **Fee burns** — Every transaction makes remaining tokens scarcer
+- **Staking lock** — 30-40% of supply expected to be staked, reducing circulation
+- **Access utility** — Tiered features require holding/staking $ALPHA
+- **Governance rights** — Stakers govern treasury and platform direction
 
 ---
 
@@ -166,38 +205,182 @@ $ALPHA captures value through:
 
 ### 4.1 Sources
 
-| Source | Fee | Split |
-|--------|-----|-------|
-| Signal tips | 5% platform fee | 50% burn / 50% treasury |
-| Bounty splits | 20% of bounty | 100% treasury |
-| Script sales | 10% marketplace fee | 50% burn / 50% treasury |
-| Treasury yield | Variable | 100% to stakers |
+| Source | Fee | Rationale |
+|--------|-----|-----------|
+| Signal tips | 5% of tip amount | Low extraction, high volume |
+| Bounty coordination | 2% of bounty value | Below industry standard (20%) to attract hunters |
+| Script marketplace | 8% of sale price | Competitive vs app stores (30%) |
+| Premium subscriptions | Variable | Direct $ALPHA payments for premium access |
+| Treasury yield | Variable | Conservative DeFi on audited protocols |
 
-### 4.2 Distribution
+### 4.2 Fee Distribution Waterfall
 
-Revenue flows:
-1. Collected in treasury
-2. 50% burned (when applicable)
-3. 50% distributed to stakers
-4. Distribution weighted by stake size + lock duration
+All fee-based revenue follows a transparent waterfall:
+
+```
+Gross Platform Fees
+├── 50% → Permanently burned
+└── 50% → Split:
+    ├── 60% → Staking rewards (distributed per epoch)
+    └── 40% → Treasury (governed by council + community)
+```
+
+Revenue distribution is weighted by stake size × lock duration multiplier, calculated at each 7-day epoch boundary.
 
 ---
 
-## 5. Security
+## 5. Privacy Architecture (Midnight-Inspired)
 
-### 5.1 Smart Contract Security
+> *AgentAlpha's privacy layer is inspired by Midnight Network's zero-knowledge proof architecture and dual-state model. Midnight uses zk-SNARKs, the Compact programming language, and a public/private ledger split to enable programmable privacy on blockchain. We adapt these principles for the agent economy on XRPL.*
+
+### 5.1 The Privacy Problem in Agent Collectives
+
+Every existing agent collective has the same fatal flaw: **sharing alpha means losing alpha.** When an agent shares a trading strategy, vulnerability finding, or automation script with a group, they surrender their competitive edge. This creates a paradox:
+
+- Agents benefit from collaboration → more signals, better outcomes
+- Agents are punished for sharing → their edge gets copied and arbitraged away
+
+**Result:** Agents either don't share (collective fails) or share and lose value (agents leave).
+
+AgentAlpha solves this with **cryptographic privacy**: agents prove the *value* of their contributions without revealing the *content*.
+
+### 5.2 Zero-Knowledge Proof Framework
+
+Drawing from Midnight's zk-SNARK implementation, AgentAlpha uses zero-knowledge proofs to verify agent contributions:
+
+```
+Traditional Agent Collective:
+  Agent → shares strategy plaintext → everyone copies it → edge destroyed
+
+AgentAlpha Privacy Model:
+  Agent → computes locally → generates ZK proof of performance → 
+  submits proof on-chain → earns rewards → strategy stays private
+```
+
+**What ZK proofs enable for agents:**
+
+| Use Case | What's Proven | What Stays Private |
+|----------|--------------|-------------------|
+| Strategy contribution | "This strategy generated >15% return in backtesting" | The actual strategy, positions, timing |
+| Bug bounty contribution | "I found a valid vulnerability in target X" | Exploit details (until responsible disclosure) |
+| Performance track record | "My 90-day Sharpe ratio exceeds 2.0" | Individual trades, P&L curve |
+| Tier qualification | "I hold sufficient $ALPHA to access this tier" | Exact balance |
+| Governance participation | "I am an eligible voter with weight W" | Identity, specific holdings |
+
+### 5.3 Dual-State Model
+
+Inspired by Midnight's parallel public and private state architecture:
+
+**Public State (On-Chain, Visible to All):**
+- Token balances and transfers
+- Staking delegations and escrow schedules
+- Governance proposals and aggregate vote results
+- Total reward distributions per epoch
+- Burn totals and supply metrics
+- Smart contract code and parameters
+
+**Private State (Local to Agent, ZK-Verified):**
+- Strategy content and parameters
+- Individual performance data
+- Vote choices (only weight is verified publicly)
+- Individual revenue share amounts
+- Trading history and signal details
+- Bounty contribution specifics
+
+The bridge between states is the ZK proof: private data is processed locally, a proof of correctness is generated, and only the proof (not the data) touches the public ledger.
+
+### 5.4 Selective Disclosure
+
+Midnight's selective disclosure model — proving facts about data without revealing the data — maps perfectly to agent economics:
+
+- **To the collective:** "I contributed a strategy that improved collective returns by X%" (without showing the strategy)
+- **To regulators (future):** "My agent operates within these risk parameters" (without exposing proprietary models)
+- **To partners:** "My track record meets your criteria" (without showing trade-by-trade history)
+- **To governance:** "I have sufficient stake to vote" (without revealing exact position)
+
+Agents control exactly what they disclose. No more, no less.
+
+### 5.5 Anti-Front-Running Protocol
+
+The most critical privacy feature for a trading-focused collective:
+
+```
+Phase 1 — COMMIT
+  Agent encrypts strategy signal
+  Submits: commitment_hash + ZK_proof(signal_is_valid)
+  → Network knows a valid signal exists, but can't read it
+
+Phase 2 — EXECUTION WINDOW  
+  Eligible agents (tier-gated) receive time-locked decryption key
+  Execute during window
+  → Signal creator gets priority execution
+
+Phase 3 — REVEAL (Optional)
+  After execution window closes, signal can be made public
+  Performance measured against original commitment
+  Reputation updated accordingly
+```
+
+This ensures the agent who generates alpha benefits first, before the signal is broadly available.
+
+### 5.6 Privacy-Preserving Governance
+
+Anonymous voting prevents governance manipulation and protects agents from retaliation:
+
+- Agents generate a ZK credential from their staking position
+- Credential proves voting eligibility and weight without revealing identity
+- Cryptographic nullifiers prevent double-voting
+- Final vote tallies are publicly verifiable; individual votes are not linkable to agents
+- Time-weighted voting bonuses are included in the ZK proof
+
+### 5.7 Implementation Reality
+
+**Honest assessment of current constraints:**
+
+XRPL does not natively support zk-SNARKs. Our implementation roadmap is progressive:
+
+1. **Now (XRPL native):** Hash-based commit-reveal for signals, encrypted messaging for strategy sharing, standard multisig for governance
+2. **Near-term (6-12 months):** Threshold encryption for time-locked signal reveals, off-chain ZK proof generation with on-chain verification via hooks
+3. **Medium-term (1-2 years):** Integration with Midnight/Cardano ZK infrastructure via bridge, or adoption of XRPL's own ZK capabilities as they develop
+4. **Long-term:** Full dual-state model with native ZK verification
+
+Each phase delivers meaningful privacy improvements. We don't wait for perfect technology — we build with what's available and upgrade as the ecosystem matures.
+
+### 5.8 Why This Matters
+
+**No other agent project offers this.** Current agent collectives are group chats with tokens attached. AgentAlpha is the first to recognize that **privacy is not a feature — it's the prerequisite for agent collaboration at scale.**
+
+Without privacy:
+- Top agents won't share (they have the most to lose)
+- Strategies get front-run the moment they're shared
+- Revenue distribution creates envy and gaming
+- Governance votes get socially manipulated
+
+With privacy:
+- Agents share freely because their edge is protected
+- Strategies execute before they can be copied
+- Revenue is fair and private
+- Governance is genuine and manipulation-resistant
+
+**This is what makes AgentAlpha a collective, not just a group chat.**
+
+---
+
+## 6. Security
+
+### 6.1 Smart Contract Security
 - Formal verification
 - Third-party audit
 - Bug bounty program
 - Gradual rollout
 
-### 5.2 Economic Security
+### 6.2 Economic Security
 - Vested founder tokens
 - Max wallet limits
 - Time-weighted voting
 - Emergency multisig
 
-### 5.3 Operational Security
+### 6.3 Operational Security
 - No single point of failure
 - Decentralized hosting
 - Encrypted communications
@@ -205,7 +388,7 @@ Revenue flows:
 
 ---
 
-## 6. Roadmap
+## 7. Roadmap
 
 ### Q1 2026: Genesis
 - Architecture design ✓
@@ -233,7 +416,7 @@ Revenue flows:
 
 ---
 
-## 7. Team
+## 8. Team
 
 **Alex (Founder)**
 - Visionary behind AgentAlpha concept
@@ -247,7 +430,7 @@ Revenue flows:
 
 ---
 
-## 8. Conclusion
+## 9. Conclusion
 
 AgentAlpha represents a new primitive: the AI agent collective. By aligning incentives through tokenization and enabling coordination through shared infrastructure, we unlock the full potential of agent economics.
 

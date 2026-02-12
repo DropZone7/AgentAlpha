@@ -194,6 +194,160 @@ Reputation Score =
 
 ---
 
+## Privacy Layer (Midnight-Inspired)
+
+> *Inspired by Midnight Network's dual-state model, zk-SNARKs, Compact language, and selective disclosure. Adapted for XRPL with progressive implementation.*
+
+### Privacy Architecture
+
+```
+┌──────────────────────────────────────────────────────────────┐
+│                    PRIVACY LAYER                              │
+├──────────────────────────────────────────────────────────────┤
+│                                                               │
+│  ┌─────────────────────┐     ┌──────────────────────────┐   │
+│  │   PUBLIC STATE       │     │   PRIVATE STATE           │   │
+│  │   (XRPL On-Chain)   │     │   (Agent-Local + ZK)      │   │
+│  ├─────────────────────┤     ├──────────────────────────┤   │
+│  │ Token balances       │     │ Strategy content          │   │
+│  │ Staking delegations  │     │ Performance raw data      │   │
+│  │ Governance proposals │     │ Individual vote choices   │   │
+│  │ Burn/supply metrics  │     │ Revenue share details     │   │
+│  │ Escrow schedules     │     │ Trading history           │   │
+│  │ Epoch reward totals  │     │ Signal payloads           │   │
+│  └────────┬────────────┘     └────────────┬─────────────┘   │
+│           │                                │                  │
+│           └──────────┐    ┌────────────────┘                  │
+│                      ▼    ▼                                   │
+│              ┌───────────────────┐                            │
+│              │   ZK PROOF BRIDGE │                            │
+│              │   (zk-SNARKs)     │                            │
+│              │                   │                            │
+│              │ • Verify without  │                            │
+│              │   revealing data  │                            │
+│              │ • 128-byte proofs │                            │
+│              │ • ms verification │                            │
+│              └───────────────────┘                            │
+└──────────────────────────────────────────────────────────────┘
+```
+
+### Privacy Components
+
+**1. Shielded Strategy Submission Engine**
+```
+Agent Environment (Local)
+    │
+    ├── Strategy computation (never leaves agent)
+    ├── Backtest execution (local)
+    ├── ZK proof generation: prove(performance ∈ valid_range)
+    │
+    ▼
+Submission to Network
+    │
+    ├── commitment_hash = Hash(strategy_content + salt)
+    ├── zk_proof = Prove(strategy_valid ∧ performance_verified)
+    └── encrypted_payload = Encrypt(strategy, threshold_key)
+        → Decryptable only after execution window
+```
+
+**2. Selective Disclosure Module**
+```
+Agent Identity Layer
+    │
+    ├── Full profile (private, agent-local)
+    │   ├── All trade history
+    │   ├── Exact holdings
+    │   ├── Strategy parameters
+    │   └── Revenue earned
+    │
+    └── Disclosed Profile (public, ZK-verified)
+        ├── "Sharpe > 2.0" (ZK proof, no raw data)
+        ├── "Tier: Strategist" (ZK proof of stake threshold)
+        ├── "90-day win rate > 60%" (ZK proof, no trades shown)
+        └── "Contributed to N bounties" (ZK proof, no details)
+```
+
+**3. Anonymous Governance Engine**
+```
+Voting Flow:
+    1. Staker generates ZK credential:
+       prove(staked_amount ≥ threshold ∧ stake_duration ≥ min_days)
+    
+    2. One-time voting token derived from credential
+       (unlinkable to staking wallet)
+    
+    3. Vote submitted with token + nullifier
+       (nullifier prevents double-vote, doesn't reveal identity)
+    
+    4. Tallying: sum(verified_vote_weights) checked against quorum
+       Individual votes: unlinkable to any agent
+```
+
+**4. Confidential Revenue Distribution**
+```
+Epoch Reward Calculation:
+    │
+    ├── Total reward pool: PUBLIC (everyone sees the pot)
+    ├── Weighted stake totals: PUBLIC (aggregate only)
+    │
+    └── Individual shares: PRIVATE
+        Each agent receives ZK proof:
+        prove(my_reward = total_pool × my_weight / total_weight)
+        Agent verifies their own share; cannot see others'
+```
+
+**5. Anti-Front-Running Protocol**
+```
+Timeline:
+T=0          T+window       T+reveal
+│            │               │
+▼            ▼               ▼
+COMMIT       EXECUTE         REVEAL
+├─ Hash      ├─ Tier-gated   ├─ Decrypt key released
+├─ ZK proof  │  access        ├─ Performance measured
+├─ Encrypted │  to signal     ├─ Reputation updated
+│  payload   │               │
+│            │               │
+No one can   Creator gets    Strategy public
+read signal  priority        (or stays private)
+```
+
+### Implementation Phases
+
+```
+Phase 0 (Launch):        Hash-based commit-reveal on XRPL
+                         Encrypted messaging for strategy sharing
+                         Standard multisig governance
+                         ↓
+Phase 1 (Month 3-6):    Threshold encryption for time-locked reveals
+                         Off-chain ZK proof generation
+                         Encrypted revenue notifications
+                         ↓
+Phase 2 (Month 6-12):   ZK proof verification via XRPL hooks
+                         Anonymous governance credentials
+                         Shielded performance proofs
+                         ↓
+Phase 3 (Year 1-2):     Midnight/Cardano bridge for native ZK
+                         OR XRPL native ZK support
+                         Full dual-state model
+                         ↓
+Phase 4 (Year 2+):      Compact-style privacy contracts
+                         Complete programmable privacy
+                         Agent-controlled disclosure policies
+```
+
+### Technical Dependencies
+
+| Feature | Current XRPL Support | Workaround | Future Path |
+|---------|---------------------|------------|-------------|
+| Commit-reveal | ✅ Hash fields in memos | None needed | Native |
+| Encrypted payloads | ✅ Memo fields + off-chain encryption | Standard crypto libs | Native encryption |
+| ZK proof verification | ❌ Not native | Off-chain verifier + hooks | XRPL ZK hooks or Midnight bridge |
+| Anonymous credentials | ❌ Not native | Off-chain credential issuance | Midnight bridge |
+| Dual-state ledger | ❌ Not native | App-layer private state | Midnight interop |
+
+---
+
 ## Security Considerations
 
 1. **No rug pulls** — Founder tokens vested
